@@ -1,30 +1,44 @@
 require("dotenv").config();
 const Queue = require('bull');
-const DownloadQueue = new Queue('DownloadCSV');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-async function downloadfile(uuidcode) {
+const DownloadQueue = new Queue('DownloadCSV');
 
-  const fileUrl = `../Upload/${uuidcode}.csv`;
+async function downloadfile(uuidcode) {
+   
+  const fileUrl = `F:\\WORK\\Office Web Developement\\ORMVD\\Upload\\${uuidcode}.csv`;
 
   const downloadFolderPath = path.join(require('os').homedir(), 'Downloads');
   const localFilePath = path.join(downloadFolderPath, 'downloaded_file.csv');
-  const file = fs.createWriteStream(localFilePath,{ encoding: 'binary' });
+  
   console.log(fileUrl);  
-  https.get(fileUrl, (response) => {
-    response.on('data', (chunk) => {
-      file.write(chunk, 'binary');
-    });
+  fs.access(fileUrl, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error(`File ${uuidcode} does not exist in the upload folder.`);
+      return;
+    }
+  
+    // Read the file and write it to the download folder
+    console.log('HI');
+    fs.copyFile(fileUrl, localFilePath, (err) => {
+      if (err) {
+        console.error('Error copying the file:', err);
+      } else {
+        console.log(`File ${uuidcode} has been successfully downloaded to the download folder.`);
+        
 
-    response.on('end', () => {
-      file.end();
-      console.log('File downloaded successfully');
+        fs.unlink(fileUrl, (err) => {
+          if (err) {
+            console.error('Error deleting file:', err);
+            return;
+          }
+          console.log('File deleted successfully');
+        });
+      }
+
     });
-  }).on('error', (err) => {
-    fs.unlink(localFilePath, () => {}); // Delete the file if there's an error
-    console.error('Error downloading file:', err);
   });  
 }
 
@@ -34,13 +48,14 @@ function DownloadData(name) {
   DownloadQueue.add({name:name});
 }
 
-DownloadQueue.process((job,done)=>{
+DownloadQueue.process(async (job,done)=>{
   
-    downloadfile(job.data.name).then((result) => {
-      console.log('DONE')
+    await downloadfile(job.data.name).then((result) => {
     }).catch((err) => {
-      
+      console.log(err);
     });
+
+    
 });
 
 

@@ -44,19 +44,6 @@ Router
 .get((req, res) => {
 downloadquene.DownloadData(req.body.uuid); 
 res.send(200);
-  // if (fs.existsSync(filePath)) {
-  //   const fileName = path.basename(filePath);
-
-  //   // Set headers to prompt the browser to save the file
-  //   res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
-  //   res.setHeader('Content-type', 'application/octet-stream');
-
-  //   // Stream the file to the response
-  //   const fileStream = fs.createReadStream(filePath);
-  //   fileStream.pipe(res);
-  // } else {
-  //   res.status(404).send('File not found');
-  // }
 });
 
 
