@@ -10,6 +10,9 @@ const orders=require("../Models/orders");
 const orderdetails=require('../Models/orderdetails');
 const { log } = require('console');
 const customers = require('../Models/customers');
+const payments = require('../Models/payements');
+const employees = require('../Models/employees');
+const offices = require('../Models/offices');
 
 
 require("dotenv").config();
@@ -49,21 +52,28 @@ res.send(200);
 Router
 .route('/MAKEINVOICE')
 .post((req,res)=>{
-  orders.findOne({
-    include: [{
-      model: orderdetails,
-     // attributes: ['username'] // Specify the attributes you want to retrieve from the User model
-      include:[
-        {
-         module:products 
-        }
-
-      ]
+  orders.findAll({
+    include:[{
+      model: orderdetails,      
+      
+      include:[{
+        model:products,
+      }],
     },{
       model:customers,
+      include:[
+        {
+          model:payments,
+          model:employees,
+          include:[
+            {
+              model:offices
+            }
+          ]
+        }
+      ]
     }
-  ]
-    ,
+  ],
     where:{
      orderNumber:10100 
     }

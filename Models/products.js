@@ -48,7 +48,7 @@ const products = sequelize.define('products', {
     timestamps:false,
 });
 
-products.belongsTo(ProductLine); 
+//products.belongsTo(ProductLine); 
 
 
 

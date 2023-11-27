@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize');
 
 var sequelize=require("../database");
-
+var payments=require('./payements');
+const employees=require('./employees')
 const customers = sequelize.define('customers', {
     customerNumber: {
     type: DataTypes.NUMBER,
@@ -67,5 +68,7 @@ allowNull: false,
     tableName:"customers",
     timestamps:false,
 });
+customers.hasMany(payments, { foreignKey: 'customerNumber', targetKey: 'customerNumber' })
+customers.belongsTo(employees, { foreignKey: 'salesRepEmployeeNumber',})
 
 module.exports=customers;

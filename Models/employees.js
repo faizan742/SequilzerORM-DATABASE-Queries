@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 var sequelize=require("../database");
-
+const offices=require('./offices');
 const employees = sequelize.define('employees', {
     employeeNumber:{
     type: DataTypes.NUMBER,
@@ -46,6 +46,6 @@ const employees = sequelize.define('employees', {
     tableName:"employees",
     timestamps:false,
 });
-
+employees.belongsTo(offices, { foreignKey: 'officeCode',});
 
 module.exports=employees;

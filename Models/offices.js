@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 var sequelize=require("../database");
+const employees = require('./employees');
 
 const offices = sequelize.define('offices', {
   officeCode: {
@@ -50,5 +51,6 @@ allowNull: false,
     tableName:"offices",
     timestamps:false,
 });
+
 
 module.exports=offices;
