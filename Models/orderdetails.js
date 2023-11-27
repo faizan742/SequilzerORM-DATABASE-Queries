@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 var sequelize=require("../database");
-
+const products=require('./products');
 const ordersdetails = sequelize.define('orderdetails', {
   orderNumber:{
     type: DataTypes.NUMBER,
@@ -33,6 +33,8 @@ const ordersdetails = sequelize.define('orderdetails', {
     tableName:"orderdetails",
     timestamps:false,
 });
+ordersdetails.belongsToMany(products,{through:'productCode'});
+//products.belongsToMany(ordersdetails,{through:'productCode'});
 
 
 module.exports=ordersdetails;

@@ -1,11 +1,16 @@
 const express = require('express');
-const products=require("../Models/products");
 const { where } = require('sequelize');
 const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const path=require('path');
 const quene1=require('../Quene/uploaddata'); 
 const downloadquene=require('../Quene/senddata'); 
+const products=require("../Models/products");
+const orders=require("../Models/orders");
+const orderdetails=require('../Models/orderdetails');
+const { log } = require('console');
+const customers = require('../Models/customers');
+
 
 require("dotenv").config();
 
@@ -34,11 +39,6 @@ Router
       });
 });
 
-
-
-
-
-
 Router
 .route('/downloadCSV')
 .get((req, res) => {
@@ -46,23 +46,34 @@ downloadquene.DownloadData(req.body.uuid);
 res.send(200);
 });
 
-
-
-
-
-
 Router
 .route('/MAKEINVOICE')
 .post((req,res)=>{
-  RentalModel.updateOne({"Customer.username":req.body.name},{$set:{Price:req.body.Price}})
-      .then((result) => {
-        console.log('Movie Upadtes:', result);
-        res.sendStatus(200);
-      })
-      .catch(error => {
-        console.error('Error querying database:', error);
-        res.sendStatus(404);
-      });
+  orders.findOne({
+    include: [{
+      model: orderdetails,
+     // attributes: ['username'] // Specify the attributes you want to retrieve from the User model
+      include:[
+        {
+         module:products 
+        }
+
+      ]
+    },{
+      model:customers,
+    }
+  ]
+    ,
+    where:{
+     orderNumber:10100 
+    }
+  }).then((result) => {
+    console.log(result);
+    res.json(result);
+  }).catch((err) => {
+    
+  });
+
 });
 
 

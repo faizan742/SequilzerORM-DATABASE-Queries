@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 var sequelize=require("../database");
-
+const ProductLine=require('./productlines');
 const products = sequelize.define('products', {
   productCode: {
     type: DataTypes.STRING,
@@ -48,7 +48,7 @@ const products = sequelize.define('products', {
     timestamps:false,
 });
 
-
+products.belongsTo(ProductLine); 
 
 
 

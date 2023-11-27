@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 
 var sequelize=require("../database");
+const ordersdetails = require('./orderdetails');
+const customers= require('./customers');
 
 const Orders = sequelize.define('orders', {
   orderNumber: {
@@ -41,8 +43,11 @@ const Orders = sequelize.define('orders', {
     timestamps:false,
 });
 
+Orders.hasOne(ordersdetails,{foreignKey:'orderNumber'});
+ordersdetails.belongsTo(Orders,{foreignKey:'orderNumber'});
 
-
+Orders.belongsTo(customers,{foreignKey:'customerNumber'}
+);
 
 
 
