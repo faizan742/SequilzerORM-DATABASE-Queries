@@ -43,7 +43,7 @@ const Orders = sequelize.define('orders', {
     timestamps:false,
 });
 
-Orders.hasOne(ordersdetails,{foreignKey:'orderNumber'});
+Orders.hasMany(ordersdetails,{foreignKey:'orderNumber'});
 ordersdetails.belongsTo(Orders,{foreignKey:'orderNumber'});
 
 Orders.belongsTo(customers,{foreignKey:'customerNumber'}

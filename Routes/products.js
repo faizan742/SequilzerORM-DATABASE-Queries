@@ -13,7 +13,7 @@ const customers = require('../Models/customers');
 const payments = require('../Models/payements');
 const employees = require('../Models/employees');
 const offices = require('../Models/offices');
-
+const pdfmodel=require('../makepdf');
 
 require("dotenv").config();
 
@@ -55,7 +55,6 @@ Router
   orders.findAll({
     include:[{
       model: orderdetails,      
-      
       include:[{
         model:products,
       }],
@@ -63,23 +62,26 @@ Router
       model:customers,
       include:[
         {
-          model:payments,
+          
           model:employees,
           include:[
             {
               model:offices
             }
           ]
+        },{
+          model:payments,
         }
       ]
     }
   ],
     where:{
-     orderNumber:10100 
+     orderNumber:parseInt(req.body.orderNumber) 
     }
   }).then((result) => {
-    console.log(result);
     res.json(result);
+    pdfmodel(result);
+    
   }).catch((err) => {
     
   });

@@ -35,4 +35,7 @@ const ordersdetails = sequelize.define('orderdetails', {
 });
 ordersdetails.belongsTo(products, { foreignKey: 'productCode', targetKey: 'productCode' });
 
+//ordersdetails.belongsToMany(products, { through: 'productCode' });
+//ordersdetails.hasMany(products, { foreignKey: 'productCode' });
+
 module.exports=ordersdetails;
