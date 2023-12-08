@@ -50,7 +50,7 @@ const products = sequelize.define('products', {
 
 //products.belongsTo(ProductLine); 
 
-
-
+products.belongsTo(ProductLine, { foreignKey: 'productLine' });
+ProductLine.hasMany(products, { foreignKey: 'productLine' });
 
 module.exports=products;

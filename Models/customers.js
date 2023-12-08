@@ -69,6 +69,7 @@ allowNull: false,
     timestamps:false,
 });
 customers.hasMany(payments, { foreignKey: 'customerNumber', targetKey: 'customerNumber' })
-customers.belongsTo(employees, { foreignKey: 'salesRepEmployeeNumber',})
-
+payments.belongsTo(customers,{ foreignKey: 'customerNumber', targetKey: 'customerNumber' })
+customers.belongsTo(employees, { foreignKey: 'salesRepEmployeeNumber',sourceKey: 'employeeNumber'})
+employees.hasMany(customers,{ foreignKey: 'salesRepEmployeeNumber', sourceKey: 'employeeNumber' })
 module.exports=customers;

@@ -47,5 +47,5 @@ const employees = sequelize.define('employees', {
     timestamps:false,
 });
 employees.belongsTo(offices, { foreignKey: 'officeCode',});
-
+offices.hasMany(employees, { foreignKey: 'officeCode' });
 module.exports=employees;

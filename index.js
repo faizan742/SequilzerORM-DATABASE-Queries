@@ -1,19 +1,57 @@
 const express = require('express');
-const products=require('./Routes/products');
-var sequelize=require("./database");
-
- const cron = require('node-cron');
-// const fetch = require('node-fetch');
+const query=require('./Routes/query');
+const sequelize=require("./database");
+const pino = require('pino');
+const pinoPretty = require('pino-pretty');
+const expressPino = require('express-pino-logger');
+const log = require('./Models/log');
 require("dotenv").config();
 
+const logger = pino({ prettifier: pinoPretty,}); 
+
+const expressLogger = expressPino({ logger });
+
+const rateLimit= require('express-rate-limit');
 const app = express();
 const port = process.env.PORT || '8000';
 
-app.use("/products",products);
+async function saveLogToDatabase(logData) {
+  try {       
+    log.create(logData);
+  } catch (error) {
+    console.error('Error saving log to the database:', error);
+  }
+}
 
+
+app.use((req, res, next) => {
+  logger.info({ method: req.method, path: req.path,result:res.statusCode }, 'Request received');
+   saveLogToDatabase({
+    hostname:req.hostname,
+    methods:req.method,
+    Status:res.statusCode,
+    path: req.path
+   })
+  next(); 
+});
+
+
+
+const limitrate=rateLimit({
+  windowMs: 10000, 
+  max: 5, 
+  message: "Too many requests from this IP, please try again later."
+});
+
+
+app.use(limitrate);
+app.use(expressLogger);
+
+app.use("/query",query);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.get('/', (req, res) => {
     res.send('HI There this is base ');
   });
@@ -34,4 +72,5 @@ sequelize.authenticate().then(() => {
   console.error('Unable to connect to the database: ', error);
 });
 
-//cron.schedule('*/10 * * * *', myTask);
+sequelize.sync();
+
