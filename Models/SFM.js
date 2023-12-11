@@ -21,7 +21,8 @@ const ST = sequelize.define('successfull transactions', {
     allowNull: false,
     
   },
-    
+  time_stamp:{type:DataTypes.STRING} 
+
 },{
     tableName:"successfull transactions",
     timestamps:false,

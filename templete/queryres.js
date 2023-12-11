@@ -6,7 +6,7 @@ res={
 function getresponse(data,meta) {
     
     res.data=data;
-    res.meta.push(meta);
+    res.meta=meta;
     return res;
 }
 module.exports=getresponse;

@@ -7,9 +7,8 @@ const Log = sequelize.define('logs', {
     methods:{type:DataTypes.STRING} ,
     Status:{type:DataTypes.BIGINT} ,
     path:{type:DataTypes.STRING} ,
-    hostname:{
-       type: DataTypes.STRING
-    } 
+    hostname:{type: DataTypes.STRING},
+    time_stamp:{type:DataTypes.STRING} 
   },{
     tableName:"logs",
     timestamps:false,

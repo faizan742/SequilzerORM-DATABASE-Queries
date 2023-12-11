@@ -21,6 +21,8 @@ const UFT = sequelize.define('Unsuccessfull transactions', {
     allowNull: false,
     
   },
+  time_stamp:{type:DataTypes.STRING} 
+
   
 },{
     tableName:"Unsuccessfull transactions",

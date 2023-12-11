@@ -12,9 +12,16 @@ const logger = pino({ prettifier: pinoPretty,});
 const expressLogger = expressPino({ logger });
 
 const rateLimit= require('express-rate-limit');
+const { DATE } = require('sequelize');
 const app = express();
 const port = process.env.PORT || '8000';
-
+var currentdate = new Date(); 
+var datetime = "Last Action Perform: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
 async function saveLogToDatabase(logData) {
   try {       
     log.create(logData);
@@ -26,11 +33,15 @@ async function saveLogToDatabase(logData) {
 
 app.use((req, res, next) => {
   logger.info({ method: req.method, path: req.path,result:res.statusCode }, 'Request received');
-   saveLogToDatabase({
-    hostname:req.hostname,
-    methods:req.method,
-    Status:res.statusCode,
-    path: req.path
+   res.on('finish',async ()=>{
+    saveLogToDatabase({
+      hostname:req.hostname,
+      methods:req.method,
+      Status:res.statusCode,
+      path: req.path,
+      time_stamp:datetime
+     })
+
    })
   next(); 
 });
@@ -39,7 +50,7 @@ app.use((req, res, next) => {
 
 const limitrate=rateLimit({
   windowMs: 10000, 
-  max: 5, 
+  max: 2, 
   message: "Too many requests from this IP, please try again later."
 });
 
